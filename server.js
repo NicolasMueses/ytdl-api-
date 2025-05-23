@@ -6,7 +6,6 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-// Ruta para obtener info del video: /video-info?url=URL_DE_YOUTUBE
 app.get('/video-info', async (req, res) => {
   const videoUrl = req.query.url;
 
@@ -30,6 +29,10 @@ app.get('/video-info', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Error al obtener información del video' });
   }
+});
+
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en puerto ${PORT}`);
 });
 
 app.listen(PORT, () => {
