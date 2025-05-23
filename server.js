@@ -1,19 +1,37 @@
 const express = require('express');
 const ytdl = require('ytdl-core');
-const cors = require('cors');
 
 const app = express();
-app.use(cors());
+const PORT = process.env.PORT || 3000;
 
-app.get('/download', async (req, res) => {
-  const url = req.query.url;
-  if (!url || !ytdl.validateURL(url)) {
-    return res.status(400).json({ error: 'URL inválida' });
+app.use(express.json());
+
+// Ruta para obtener info del video: /video-info?url=URL_DE_YOUTUBE
+app.get('/video-info', async (req, res) => {
+  const videoUrl = req.query.url;
+
+  if (!videoUrl || !ytdl.validateURL(videoUrl)) {
+    return res.status(400).json({ error: 'URL inválida o no proporcionada' });
   }
 
-  const info = await ytdl.getInfo(url);
-  const format = ytdl.chooseFormat(info.formats, { quality: 'highestaudio' });
-  res.json({ downloadUrl: format.url });
+  try {
+    const info = await ytdl.getInfo(videoUrl);
+
+    const videoDetails = {
+      title: info.videoDetails.title,
+      lengthSeconds: info.videoDetails.lengthSeconds,
+      author: info.videoDetails.author.name,
+      thumbnail: info.videoDetails.thumbnails.pop().url,
+      viewCount: info.videoDetails.viewCount,
+      uploadDate: info.videoDetails.uploadDate,
+    };
+
+    res.json(videoDetails);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener información del video' });
+  }
 });
 
-app.listen(3000, () => console.log('Servidor corriendo en puerto 3000'));
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en puerto ${PORT}`);
+});
