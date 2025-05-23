@@ -1,12 +1,12 @@
 {
   "name": "ytdl-core-railway",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "serve.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node serve.js"
   },
   "dependencies": {
-    "ytdl-core": "^4.16.10"
+    "express": "^4.18.2",
+    "ytdl-core": "^4.11.5"
   }
 }
-
